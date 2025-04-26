@@ -84,7 +84,7 @@ void setup() {
 }
 
 void loop() {
-  String path = "https://rfiddooraccess-default-rtdb.firebaseio.com/Student/S1/name/.json"; 
+  String path = "https://rfiddooraccess-default-rtdb.firebaseio.com/Class/Student1/name/.json"; 
   String name = fb.getString(path);
   if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
     delay(50);
@@ -131,8 +131,8 @@ void loop() {
 
 bool checkUid(String id) {
  
-  String pathId = "/Student/S1/" + id;
-  String pathDate = "/Student/S1/date/";
+  String pathId = "/Class/Student1/" + id;
+  String pathDate = "/Class/Student1/date/";
 
  
   int result = fb.setString(pathDate, Date); 
