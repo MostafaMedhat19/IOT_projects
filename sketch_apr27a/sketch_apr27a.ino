@@ -127,3 +127,148 @@ void loop() {
   client.add("auth_access", counter);  
   client.ubidotsPublish("esp32-project");
 }
+
+//-----------------------------------------
+#include <SPI.h>
+#include <MFRC522.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include "UbidotsESPMQTT.h"
+
+#define REFERENCE_URL ""
+#define AUTH_TOKEN ""
+#define RST_PIN       
+#define SS_PIN     
+#define TOKEN "....."    
+#define WIFI_SSID "....." 
+#define WIFI_PASSWORD "....."
+
+#define BUZZER 
+#define BLUE_LED 
+#define RED_LED 
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+Ubidots client(TOKEN);
+MFRC522 mfrc522(SS_PIN, RST_PIN); 
+Adafruit_SSD1306 display = Adafruit_SSD1306(128, 64, &WIRE , -1 );
+Firebase fb(REFERENCE_URL, AUTH_TOKEN);
+String UID   =""; 
+int counter = 0 ; 
+bool checkUid(String id)
+{
+   String path = "users/"+id; 
+   int value = fb.getInt(path); 
+   if(!value)
+      {
+        
+        return false ;
+      }
+      counter++; 
+    return true ; 
+}
+void showMessage(String msg)
+{
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.print(msg);
+  display.setCursor(0,0);
+  display.display(); 
+}
+void pushLogs(String id ,String message )
+{
+  
+   fb.pushString("logs" , id + "  " + message );
+}
+void setup() {
+
+  Serial.begin(115200);  
+  while (!Serial);    
+  SPI.begin();       
+  mfrc522.PCD_Init(); 
+  pinMode(BUZZER , OUTPUT); 
+  pinMode(BLUE_LED, OUTPUT); 
+  pinMode(RED_LED, OUTPUT); 
+  digitalWrite(BUZZER , LOW); 
+  digitalWrite(BLUE_LED, LOW);
+   digitalWrite(RED_LED, LOW);
+  Serial.println(F("Warning: this example overwrites the UID of your UID changeable card, use with care!"));
+   display.display();
+  delay(1000);
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); 
+
+  Serial.println("OLED begun");
+  display.clearDisplay();
+  display.display();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.print("connected!");
+  display.println("IP: 10.0.1.23"); 
+  display.setCursor(0,0);
+  display.display(); 
+  Serial.println();
+  Serial.println();
+  Serial.print("Connecting to: ");
+  Serial.println(WIFI_SSID);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print("-");
+    delay(500);
+  }
+
+  Serial.println();
+  Serial.println("WiFi Connected");
+  Serial.println();
+  Serial.begin(115200);
+  client.setDebug(true);  
+  client.wifiConnection(WIFI_SSID, WIFI_PASSWORD);
+  client.begin(callback);
+}
+
+void loop() {
+  if (!client.connected()) {
+    client.reconnect();
+  }
+    if ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial() ) {
+    delay(50);
+    return;
+  }
+  UID=""; 
+  for (byte i = 0; i < mfrc522.uid.size; i++) {
+       UID +=String(mfrc522.uid.uidByte[i]);
+   
+  } 
+  Serial.print(F("Card UID:"+UID));
+  bool result = checkUid(UID); 
+  if(result)
+     {
+        client.add("stuff", 1);  
+        client.add("stuff", UID.toInt());  
+        client.ubidotsPublish("source1");
+        showMessage("Acccess Granted"); 
+        pushLogs(UID ,"Acccess Granted" ); 
+     }
+     else
+     {
+     
+         showMessage("Acccess Denied"); 
+          pushLogs(UID ,"Acccess Denied" ); 
+     }
+   
+  Serial.println();
+ 
+}
