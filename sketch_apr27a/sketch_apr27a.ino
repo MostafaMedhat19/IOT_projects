@@ -117,16 +117,10 @@ void loop() {
   Serial.print("Card UID: ");
   Serial.println(UID);
 
-
-  String namePath = "student/" + UID + "/name";
-  String name = fb.getString(namePath); 
-  bool result = checkUid(UID); 
-  Serial.print(name); 
-  Serial.print(String(result)); 
-  if ( name != "null" || name =="") {
+  bool result = checkUid(UID);  
+  if (result) {
     pushAttendance(UID, String(millis()));
     client.add("auth_access", 1);  
-    
     client.add("id_label", UID.toInt());  
     client.ubidotsPublish("esp32-project");
     showMessage("Welcome: " + name); 
