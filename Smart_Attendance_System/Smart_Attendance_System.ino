@@ -15,7 +15,7 @@
 #define WIFINAME "....."  
 #define WIFIPASS "....." 
 #define REFERENCE_URL "https://rfiddooraccess-default-rtdb.firebaseio.com/"
-#define AUTH_TOKEN "AIzaSyDnSBL8CRb6wsi2Ier5voQ4oFqv6sQ2guU"
+#define AUTH_TOKEN "xxxxxxxxxxxxxx"
 #define SCREEN_ADDRESS 0x3C
 #define OLED_RESET -1
 
