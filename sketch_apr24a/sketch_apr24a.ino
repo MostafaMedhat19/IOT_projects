@@ -11,7 +11,7 @@
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
 #define FIREBASE_HOST "https://rfiddooraccess-default-rtdb.firebaseio.com/"
-#define FIREBASE_AUTH "AIzaSyDnSBL8CRb6wsi2Ier5voQ4oFqv6sQ2guU"
+#define FIREBASE_AUTH "xxxxxxxxxxxxxxx"
 
 
 #define SCREEN_WIDTH 128
