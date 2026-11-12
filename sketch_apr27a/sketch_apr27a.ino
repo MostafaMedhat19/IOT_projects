@@ -9,10 +9,10 @@
 
 
 const char* REFERENCE_URL = "https://rfiddooraccess-default-rtdb.firebaseio.com/";
-const char* AUTH_TOKEN = "6tFsRuLvPmfgFJMVQFF8UeTqTs3DS88WbDysDK8B";
+const char* AUTH_TOKEN = "xxxxxxxxxxxxx";
 const int RST_PIN = 5;   
 const int SS_PIN = 2;
-const char* TOKEN = "BBUS-IIoL8c1xc5CGXMADdtBI3JPXhXUNK2";    
+const char* TOKEN = "xxxxxxxxxxxxxxxx";    
 char* WIFI_SSID = "Alaa"; 
 char* WIFI_PASSWORD = "123456789";
 const int BUZZER = 27;
